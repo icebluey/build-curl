@@ -1638,8 +1638,13 @@ _build_curl() {
         find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' /usr/bin/strip '{}'
     fi
     echo
+    rm -f usr/lib64/libcurl.a
+    find usr/lib64/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
+    sleep 2
     install -m 0755 -d usr/lib64/curl
     cp -afr /usr/lib64/curl/private usr/lib64/curl/
+    mv -f usr/lib64/libcurl.so* usr/lib64/curl/private/
+    sed 's|^libdir=.*|libdir=/usr/lib64/curl/private|g' -i usr/lib64/pkgconfig/libcurl.pc
     echo
     sleep 2
     tar -Jcvf /tmp/curl-"${_curl_ver}"-1.el7.x86_64.tar.xz *
