@@ -1639,6 +1639,8 @@ _build_curl() {
     echo
     rm -f usr/lib64/libcurl.a
     find usr/lib64/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
+    rm -f /usr/lib64/curl/private/libgmpxx.*
+    rm -f /usr/lib64/curl/private/libgnutlsxx.*
     sleep 2
     install -m 0755 -d usr/lib64/curl
     cp -afr /usr/lib64/curl/private usr/lib64/curl/
