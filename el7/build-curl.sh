@@ -1743,7 +1743,7 @@ _dl_ngtcp2() {
     set -e
     cd /tmp
     rm -fr /tmp/ngtcp2
-    git clone --recursive -b 'v0.13.1' 'https://github.com/ngtcp2/ngtcp2.git'
+    git clone --recursive -b 'v0.15.0' 'https://github.com/ngtcp2/ngtcp2.git'
     rm -fr ngtcp2/.git
     sleep 2
     tar -zcf ngtcp2-git.tar.gz ngtcp2
