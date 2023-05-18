@@ -1614,6 +1614,7 @@ _build_curl() {
     --disable-ldap --disable-ldaps \
     --with-nghttp3 --with-ngtcp2 \
     --prefix=/usr --libdir=/usr/lib64 --includedir=/usr/include --sysconfdir=/etc
+    sed 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' -i libtool
     make all
     rm -fr /tmp/curl
     make install DESTDIR=/tmp/curl
