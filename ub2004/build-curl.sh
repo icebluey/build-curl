@@ -81,7 +81,7 @@ _build_zlib() {
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
     /bin/rm -f /usr/lib/x86_64-linux-gnu/libz.so*
     /bin/rm -f /usr/lib/x86_64-linux-gnu/libz.a
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -156,7 +156,7 @@ _build_gmp() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -224,7 +224,7 @@ _build_cares() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -377,7 +377,7 @@ _build_lz4() {
     find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -457,7 +457,7 @@ _build_zstd() {
     find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -527,7 +527,7 @@ _build_libunistring() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -595,7 +595,7 @@ _build_libexpat() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -687,9 +687,9 @@ _build_openssl111() {
     rm -fr /usr/include/x86_64-linux-gnu/openssl
     rm -fr /usr/local/openssl-1.1.1
     rm -f /etc/ld.so.conf.d/openssl-1.1.1.conf
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
-    sleep 1
+    sleep 2
     cd /tmp
     rm -fr "${_tmp_dir}"
     rm -fr /tmp/openssl111
@@ -832,7 +832,7 @@ _build_pcre2() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -846,7 +846,8 @@ _build_nghttp2() {
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    wget -c -t 9 -T 9 "https://github.com/nghttp2/nghttp2/releases/download/v1.52.0/nghttp2-1.52.0.tar.xz"
+    _nghttp2_ver="$(wget -qO- 'https://github.com/nghttp2/nghttp2/releases' | sed 's|"|\n|g' | grep -i '^/nghttp2/nghttp2/tree' | sed 's|.*/nghttp2-||g' | sed 's|\.tar.*||g' | grep -ivE 'alpha|beta|rc' | sed -e 's|.*tree/||g' -e 's|[Vv]||g' | sort -V | uniq | tail -n 1)"
+    wget -c -t 9 -T 9 "https://github.com/nghttp2/nghttp2/releases/download/v${_nghttp2_ver}/nghttp2-${_nghttp2_ver}.tar.xz"
     tar -xof nghttp2-*.tar*
     sleep 1
     rm -f nghttp2-*.tar*
@@ -900,7 +901,7 @@ _build_nghttp2() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -914,8 +915,9 @@ _build_libidn2() {
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    wget -c -t 9 -T 9 "https://ftp.gnu.org/gnu/libidn/libidn2-2.3.4.tar.gz"
-    tar -xof libidn2-*.tar*
+    _libidn2_ver="$(wget -qO- 'https://ftp.gnu.org/gnu/libidn/' | sed 's|"|\n|g' | grep -i '^libidn2-[1-9]' | sed -e 's|libidn2-||g' -e 's|\.tar.*||g' | grep -ivE 'alpha|beta|rc' | sed -e 's|.*tree/||g' -e 's|[Vv]||g' | sort -V | uniq | tail -n 1)"
+    wget -c -t 9 -T 9 "https://ftp.gnu.org/gnu/libidn/libidn2-${_libidn2_ver}.tar.gz"
+    tar -xof libidn2-*.tar.*
     sleep 1
     rm -f libidn2-*.tar*
     cd libidn2-*
@@ -969,7 +971,7 @@ _build_libidn2() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -1039,7 +1041,7 @@ _build_libffi() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -1119,7 +1121,7 @@ _build_p11kit() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -1191,7 +1193,7 @@ _build_nettle() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -1277,7 +1279,7 @@ _build_gnutls() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -1345,7 +1347,7 @@ _build_rtmpdump() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -1440,7 +1442,7 @@ _build_openssl30quictls() {
     rm -fr /usr/include/x86_64-linux-gnu/openssl
     rm -fr /usr/local/openssl-1.1.1
     rm -f /etc/ld.so.conf.d/openssl-1.1.1.conf
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -1512,7 +1514,7 @@ _build_nghttp3() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -1584,7 +1586,7 @@ _build_ngtcp2() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -1613,6 +1615,7 @@ _build_curl() {
     --disable-ldap --disable-ldaps \
     --with-nghttp3 --with-ngtcp2 \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
+    sed 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' -i libtool
     make all
     rm -fr /tmp/curl
     make install DESTDIR=/tmp/curl
@@ -1656,11 +1659,10 @@ _build_curl() {
     if [[ -d usr/bin ]]; then
         find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' /usr/bin/strip '{}'
     fi
-    rm -f usr/lib/x86_64-linux-gnu/libcurl.a
-    find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
     rm -f /usr/lib/x86_64-linux-gnu/curl/private/libgmpxx.*
     rm -f /usr/lib/x86_64-linux-gnu/curl/private/libgnutlsxx.*
-    sleep 2
+    rm -f usr/lib/x86_64-linux-gnu/libcurl.a
+    find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl
     cp -afr /usr/lib/x86_64-linux-gnu/curl/private usr/lib/x86_64-linux-gnu/curl/
     mv -f usr/lib/x86_64-linux-gnu/libcurl.so* usr/lib/x86_64-linux-gnu/curl/private/
@@ -1762,7 +1764,7 @@ _dl_ngtcp2() {
     set -e
     cd /tmp
     rm -fr /tmp/ngtcp2
-    git clone --recursive -b 'v0.13.1' 'https://github.com/ngtcp2/ngtcp2.git'
+    git clone --recursive -b 'v0.15.0' 'https://github.com/ngtcp2/ngtcp2.git'
     rm -fr ngtcp2/.git
     sleep 2
     tar -zcf ngtcp2-git.tar.gz ngtcp2
@@ -1781,7 +1783,7 @@ _dl_ngtcp2
 
 ############################################################################
 
-rm -fr /usr/lib/x86_64-linux-gnu/curl/private
+rm -fr /usr/lib/x86_64-linux-gnu/curl
 
 _build_zlib
 _build_gmp
