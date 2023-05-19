@@ -30,7 +30,7 @@ _build_zlib() {
     cd "${_tmp_dir}"
     _zlib_ver="$(wget -qO- 'https://www.zlib.net/' | grep 'zlib-[1-9].*\.tar\.' | sed -e 's|"|\n|g' | grep '^zlib-[1-9]' | sed -e 's|\.tar.*||g' -e 's|zlib-||g' | sort -V | uniq | tail -n 1)"
     wget -c -t 9 -T 9 "https://www.zlib.net/zlib-${_zlib_ver}.tar.gz"
-    tar -xof zlib-${_zlib_ver}.tar.*
+    tar -xof zlib-*.tar.*
     sleep 1
     rm -f zlib-*.tar*
     cd zlib-*
