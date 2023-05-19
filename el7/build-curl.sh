@@ -1785,7 +1785,7 @@ _dl_ngtcp2
 
 ############################################################################
 
-rm -fr /usr/lib64/curl/private
+rm -fr /usr/lib64/curl
 if [ -f /opt/gcc/lib/gcc/x86_64-redhat-linux/11/include-fixed/openssl/bn.h ]; then
     /usr/bin/mv -f /opt/gcc/lib/gcc/x86_64-redhat-linux/11/include-fixed/openssl/bn.h /opt/gcc/lib/gcc/x86_64-redhat-linux/11/include-fixed/openssl/bn.h.orig
 fi
