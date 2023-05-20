@@ -297,7 +297,7 @@ _build_brotli() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
@@ -611,10 +611,10 @@ _build_openssl111() {
     cd "${_tmp_dir}"
     _openssl111_ver="$(wget -qO- 'https://www.openssl.org/source/' | grep 'href="openssl-1.1.1' | sed 's|"|\n|g' | grep -i '^openssl-1.1.1.*\.tar\.gz$' | cut -d- -f2 | sed 's|\.tar.*||g' | sort -V | uniq | tail -n 1)"
     wget -c -t 9 -T 9 "https://www.openssl.org/source/openssl-${_openssl111_ver}.tar.gz"
-    tar -xof "openssl-${_openssl111_ver}.tar.gz"
+    tar -xof openssl-*.tar*
     sleep 1
-    rm -f "openssl-${_openssl111_ver}.tar.gz"
-    cd "openssl-${_openssl111_ver}"
+    rm -f openssl-*.tar*
+    cd openssl-*
     # Only for debian/ubuntu
     sed '/define X509_CERT_FILE .*OPENSSLDIR "/s|"/cert.pem"|"/certs/ca-certificates.crt"|g' -i include/internal/cryptlib.h
     sed '/install_docs:/s| install_html_docs||g' -i Configurations/unix-Makefile.tmpl
@@ -757,7 +757,7 @@ _build_libssh2() {
     echo
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
-    sleep 1
+    sleep 2
     /bin/cp -afr * /
     sleep 2
     cd /tmp
