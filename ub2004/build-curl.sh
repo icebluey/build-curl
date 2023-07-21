@@ -253,7 +253,7 @@ _build_brotli() {
         LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
         ./configure \
         --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
-        --enable-shared --enable-static \
+        --enable-shared --disable-static \
         --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
         make all
         rm -fr /tmp/brotli
@@ -1811,7 +1811,7 @@ _dl_nghttp3() {
     set -e
     cd /tmp
     rm -fr /tmp/nghttp3
-    git clone --recursive -b 'v0.11.0' 'https://github.com/ngtcp2/nghttp3.git'
+    git clone --recursive -b 'v0.13.0' 'https://github.com/ngtcp2/nghttp3.git'
     rm -fr nghttp3/.git
     sleep 2
     tar -zcf nghttp3-git.tar.gz nghttp3
@@ -1824,7 +1824,7 @@ _dl_ngtcp2() {
     set -e
     cd /tmp
     rm -fr /tmp/ngtcp2
-    git clone --recursive -b 'v0.15.0' 'https://github.com/ngtcp2/ngtcp2.git'
+    git clone --recursive -b 'v0.17.0' 'https://github.com/ngtcp2/ngtcp2.git'
     rm -fr ngtcp2/.git
     sleep 2
     tar -zcf ngtcp2-git.tar.gz ngtcp2
