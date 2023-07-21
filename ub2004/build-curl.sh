@@ -247,16 +247,36 @@ _build_brotli() {
 
     cd brotli
     rm -fr .git
-    ./bootstrap
-    rm -fr autom4te.cache
-    LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
-    ./configure \
-    --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
-    --enable-shared --enable-static \
-    --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-    make all
-    rm -fr /tmp/brotli
-    make install DESTDIR=/tmp/brotli
+    if [[ -f bootstrap ]]; then
+        ./bootstrap
+        rm -fr autom4te.cache
+        LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+        ./configure \
+        --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
+        --enable-shared --enable-static \
+        --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
+        make all
+        rm -fr /tmp/brotli
+        make install DESTDIR=/tmp/brotli
+    else
+        LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$ORIGIN' ; export LDFLAGS
+        cmake \
+        -S "." \
+        -B "build" \
+        -DCMAKE_BUILD_TYPE='Release' \
+        -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+        -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+        -DINCLUDE_INSTALL_DIR:PATH=/usr/include \
+        -DLIB_INSTALL_DIR:PATH=/usr/lib/x86_64-linux-gnu \
+        -DSYSCONF_INSTALL_DIR:PATH=/etc \
+        -DSHARE_INSTALL_PREFIX:PATH=/usr/share \
+        -DLIB_SUFFIX=64 \
+        -DBUILD_SHARED_LIBS:BOOL=ON \
+        -DCMAKE_INSTALL_SO_NO_EXE:INTERNAL=0
+        cmake --build "build"  --verbose
+        rm -fr /tmp/brotli
+        DESTDIR="/tmp/brotli" cmake --install "build"
+    fi
     cd /tmp/brotli
     if [[ "$(pwd)" = '/' ]]; then
         echo
