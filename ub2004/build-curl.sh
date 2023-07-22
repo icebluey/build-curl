@@ -814,6 +814,7 @@ _build_libssh2() {
         find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' /usr/bin/strip '{}'
     fi
     echo
+    sed -e '/^Libs/s/-R[^ ]*//g' -e '/^Libs/s/ *$//' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
     sleep 2
@@ -1028,6 +1029,7 @@ _build_libidn2() {
         find usr/bin/ -type f -exec file '{}' \; | sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped.*/\1/p' | xargs --no-run-if-empty -I '{}' /usr/bin/strip '{}'
     fi
     echo
+    sed -e '/^Libs/s/-R[^ ]*//g' -e '/^Libs/s/ *$//' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl/private
     cp -af usr/lib/x86_64-linux-gnu/*.so* usr/lib/x86_64-linux-gnu/curl/private/
     sleep 2
@@ -1727,6 +1729,7 @@ _build_curl() {
     cp -afr /usr/lib/x86_64-linux-gnu/curl/private usr/lib/x86_64-linux-gnu/curl/
     mv -f usr/lib/x86_64-linux-gnu/libcurl.so* usr/lib/x86_64-linux-gnu/curl/private/
     sed 's|^libdir=.*|libdir=/usr/lib/x86_64-linux-gnu/curl/private|g' -i usr/lib/x86_64-linux-gnu/pkgconfig/libcurl.pc
+    sed -e '/^Libs/s/-R[^ ]*//g' -e '/^Libs/s/ *$//' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
     echo
     sleep 2
     tar -Jcvf /tmp/curl-"${_curl_ver}"-1_amd64.tar.xz *
