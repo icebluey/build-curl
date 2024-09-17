@@ -869,8 +869,8 @@ _build_curl() {
     sed 's/-lssh2 -lssh2/-lssh2/g' -i usr/lib/x86_64-linux-gnu/pkgconfig/libcurl.pc
     sed 's/-lssl -lcrypto -lssl -lcrypto/-lssl -lcrypto/g' -i usr/lib/x86_64-linux-gnu/pkgconfig/libcurl.pc
     _strip_files
-    find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
-    #find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' patchelf --add-rpath '$ORIGIN' '{}'
+    #find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
+    find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' patchelf --add-rpath '$ORIGIN' '{}'
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl
     cp -afr /"${_private_dir}" usr/lib/x86_64-linux-gnu/curl/
     mv -f usr/lib/x86_64-linux-gnu/libcurl.so* "${_private_dir}"/
