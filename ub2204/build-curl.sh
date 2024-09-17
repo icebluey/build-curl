@@ -807,7 +807,9 @@ _build_nghttp3() {
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    wget -c -t 9 -T 9 "https://github.com/ngtcp2/nghttp3/releases/download/v1.5.0/nghttp3-1.5.0.tar.xz"
+    #wget -c -t 9 -T 9 "https://github.com/ngtcp2/nghttp3/releases/download/v1.5.0/nghttp3-1.5.0.tar.xz"
+    _nghttp3_ver="$(wget -qO- 'https://github.com/ngtcp2/nghttp3/releases' | grep -i '/ngtcp2/nghttp3/tree/' | sed 's|"|\n|g' | grep -i '^/ngtcp2/nghttp3/tree/' | grep -ivE 'alpha|beta|rc[0-9]' | sed 's|.*/tree/[Vv]||g' | sort -V | uniq | tail -n1)"
+    wget -c -t 9 -T 9 "https://github.com/ngtcp2/nghttp3/releases/download/v${_nghttp3_ver}/nghttp3-${_nghttp3_ver}.tar.xz"
     tar -xof nghttp3-*.tar*
     sleep 1
     rm -f nghttp3-*.tar*
