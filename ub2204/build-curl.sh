@@ -894,7 +894,7 @@ _build_curl() {
 rm -fr /usr/lib/x86_64-linux-gnu/curl
 
 _build_zlib
-_build_gmp
+#_build_gmp
 _build_cares
 _build_brotli
 _build_lz4
