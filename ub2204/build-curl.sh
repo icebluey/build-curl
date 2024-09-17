@@ -899,7 +899,7 @@ _build_cares
 _build_brotli
 _build_lz4
 _build_zstd
-_build_libexpat
+#_build_libexpat
 _build_libunistring
 _build_openssl33
 _build_libssh2
