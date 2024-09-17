@@ -14,7 +14,7 @@ CXX=g++
 export CXX
 /sbin/ldconfig
 
-_private_dir='usr/lib/x86_64-linux-gnu/curl/private'
+export _private_dir='usr/lib/x86_64-linux-gnu/curl/private'
 
 set -e
 
@@ -76,8 +76,8 @@ _build_zlib() {
     make DESTDIR=/tmp/zlib install
     cd /tmp/zlib
     _strip_files
-    install -m 0755 -d "${_private_dir}"
-    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    install -v -m 0755 -d "${_private_dir}"
+    cp -v -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
     /bin/rm -f /usr/lib/x86_64-linux-gnu/libz.so*
     /bin/rm -f /usr/lib/x86_64-linux-gnu/libz.a
     sleep 2
