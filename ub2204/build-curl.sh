@@ -59,13 +59,6 @@ _strip_files() {
     echo
 }
 
-if ! grep -q -i '^1:.*docker' /proc/1/cgroup; then
-    echo
-    echo ' Not in a container!'
-    echo
-    exit 1
-fi
-
 _build_zlib() {
     /sbin/ldconfig
     set -e
