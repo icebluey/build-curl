@@ -117,7 +117,7 @@ _build_gmp() {
     -e 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' \
     -e 's|-lstdc++ -lm|-lstdc++|' \
     -i libtool
-    make all
+    make -j2 all
     rm -fr /tmp/gmp
     make install DESTDIR=/tmp/gmp
     install -v -m 0644 gmp-mparam.h /tmp/gmp/usr/include/
@@ -150,7 +150,7 @@ _build_cares() {
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-shared --enable-static \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-    make all
+    make -j2 all
     rm -fr /tmp/cares
     make install DESTDIR=/tmp/cares
     cd /tmp/cares
@@ -182,7 +182,7 @@ _build_brotli() {
         --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
         --enable-shared --disable-static \
         --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-        make all
+        make -j2 all
         rm -fr /tmp/brotli
         make install DESTDIR=/tmp/brotli
     else
@@ -238,7 +238,7 @@ _build_lz4() {
     sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
     #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
     LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
-    make V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
+    make -j2 V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
     rm -fr /tmp/lz4
     make install DESTDIR=/tmp/lz4
     cd /tmp/lz4
@@ -276,7 +276,7 @@ _build_zstd() {
     sed '/^prefix/s|= .*|= /usr|g' -i programs/Makefile
     #sed '/^libdir/s|= .*|= /usr/lib/x86_64-linux-gnu|g' -i programs/Makefile
     LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$OOORIGIN' ; export LDFLAGS
-    make V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
+    make -j2 V=1 prefix=/usr libdir=/usr/lib/x86_64-linux-gnu
     rm -fr /tmp/zstd
     make install DESTDIR=/tmp/zstd
     cd /tmp/zstd
@@ -310,7 +310,7 @@ _build_libunistring() {
     --enable-shared --enable-static \
     --enable-largefile --enable-year2038 \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-    make all
+    make -j2 all
     rm -fr /tmp/libunistring
     make install DESTDIR=/tmp/libunistring
     cd /tmp/libunistring
@@ -342,7 +342,7 @@ _build_libexpat() {
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-shared --enable-static \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-    make all
+    make -j2 all
     rm -fr /tmp/libexpat
     make install DESTDIR=/tmp/libexpat
     cd /tmp/libexpat
@@ -467,7 +467,7 @@ _build_libssh2() {
     --disable-silent-rules --with-libz --enable-debug --with-crypto=openssl \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
     sed 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' -i libtool
-    make all
+    make -j2 all
     rm -fr /tmp/libssh2
     make install DESTDIR=/tmp/libssh2
     cd /tmp/libssh2
@@ -505,7 +505,7 @@ _build_pcre2() {
     --enable-pcre2test-libedit --enable-unicode \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
     sed 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' -i libtool
-    make all
+    make -j2 all
     rm -fr /tmp/pcre2
     make install DESTDIR=/tmp/pcre2
     cd /tmp/pcre2
@@ -538,7 +538,7 @@ _build_nghttp2() {
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-lib-only --with-openssl=yes --with-zlib \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-    make all
+    make -j2 all
     rm -fr /tmp/nghttp2
     make install DESTDIR=/tmp/nghttp2
     cd /tmp/nghttp2
@@ -571,7 +571,7 @@ _build_libidn2() {
     --enable-shared --enable-static --disable-doc \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
     sed 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' -i libtool
-    make all
+    make -j2 all
     rm -fr /tmp/libidn2
     make install DESTDIR=/tmp/libidn2
     cd /tmp/libidn2
@@ -606,7 +606,7 @@ _build_libffi() {
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
     sed '/^toolexeclibdir /s|/\.\./lib||g' -i Makefile
     [[ -f x86_64-pc-linux-gnu/Makefile ]] && sed '/^toolexeclibdir /s|/\.\./lib||g' -i x86_64-pc-linux-gnu/Makefile
-    make all
+    make -j2 all
     rm -fr /tmp/libffi
     make install DESTDIR=/tmp/libffi
     cd /tmp/libffi
@@ -648,7 +648,7 @@ _build_p11kit() {
     --disable-doc --disable-silent-rules \
     --with-trust-paths=/etc/ssl/certs/ca-certificates.crt \
     --with-hash-impl=internal
-    make all
+    make -j2 all
     rm -fr /tmp/p11kit
     make install DESTDIR=/tmp/p11kit
     cd /tmp/p11kit
@@ -683,7 +683,7 @@ _build_nettle() {
     --includedir=/usr/include --sysconfdir=/etc \
     --enable-shared --enable-static --enable-fat \
     --disable-openssl
-    make all
+    make -j2 all
     rm -fr /tmp/nettle
     make install DESTDIR=/tmp/nettle
     cd /tmp/nettle
@@ -732,7 +732,7 @@ _build_gnutls() {
     sed 's| -Wl,-rpath -Wl,/usr/lib/x86_64-linux-gnu||g' -i Makefile
     sed 's| -R/usr/lib/x86_64-linux-gnu||g' -i lib/Makefile
     sed 's| -Wl,-rpath -Wl,/usr/lib/x86_64-linux-gnu||g' -i lib/Makefile
-    make all
+    make -j2 all
     rm -fr /tmp/gnutls
     make install DESTDIR=/tmp/gnutls
     cd /tmp/gnutls
@@ -792,7 +792,7 @@ _build_nghttp3() {
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-shared --enable-lib-only \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
-    make all
+    make -j2 all
     rm -fr /tmp/nghttp3
     make install DESTDIR=/tmp/nghttp3
     cd /tmp/nghttp3
@@ -829,7 +829,7 @@ _build_curl() {
     --with-nghttp3 --with-openssl-quic \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
     sed 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' -i libtool
-    make all
+    make -j2 all
     rm -fr /tmp/curl
     make install DESTDIR=/tmp/curl
     cd /tmp/curl
