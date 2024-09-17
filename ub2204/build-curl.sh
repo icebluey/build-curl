@@ -904,8 +904,8 @@ _build_libunistring
 _build_openssl33
 _build_libssh2
 _build_pcre2
-_build_libffi
-_build_p11kit
+#_build_libffi
+#_build_p11kit
 _build_libidn2
 _build_libpsl
 _build_nghttp2
