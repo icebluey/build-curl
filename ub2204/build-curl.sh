@@ -582,6 +582,38 @@ _build_libidn2() {
     /sbin/ldconfig
 }
 
+_build_libpsl() {
+    /sbin/ldconfig
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    _libpsl_ver="$(wget -qO- 'https://github.com/rockdaboot/libpsl/releases' | grep -i '/rockdaboot/libpsl/tree/' | sed 's|"|\n|g' | grep -i '^/rockdaboot/libpsl/tree/' | grep -ivE 'alpha|beta|rc[0-9]' | sed 's|.*/tree/||g' | sed 's|libpsl-||g' | sort -V | uniq | tail -n1)"
+    wget -c -t 9 -T 9 "https://github.com/rockdaboot/libpsl/releases/download/${_libpsl_ver}/libpsl-${_libpsl_ver}.tar.gz"
+    tar -xof libpsl-*.tar*
+    sleep 1
+    rm -f libpsl-*.tar*
+    cd libpsl-*
+    LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+    ./configure \
+    --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
+    --enable-shared --disable-static --enable-runtime=libidn2 \
+    --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
+    make -j2 all
+    rm -fr /tmp/libpsl
+    make install DESTDIR=/tmp/libpsl
+    cd /tmp/libpsl
+    _strip_files
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    sleep 2
+    /bin/cp -afr * /
+    sleep 2
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/libpsl
+    /sbin/ldconfig
+}
+
 _build_libffi() {
     /sbin/ldconfig
     set -e
@@ -869,6 +901,7 @@ _build_pcre2
 _build_libffi
 _build_p11kit
 _build_libidn2
+_build_libpsl
 _build_nghttp2
 #_build_nettle
 #_build_gnutls
