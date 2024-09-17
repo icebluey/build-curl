@@ -76,8 +76,8 @@ _build_zlib() {
     make DESTDIR=/tmp/zlib install
     cd /tmp/zlib
     _strip_files
-    install -v -m 0755 -d "${_private_dir}"
-    cp -v -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
     /bin/rm -f /usr/lib/x86_64-linux-gnu/libz.so*
     /bin/rm -f /usr/lib/x86_64-linux-gnu/libz.a
     sleep 2
@@ -96,7 +96,7 @@ _build_gmp() {
     cd "${_tmp_dir}"
     #_gmp_ver="$(wget -qO- 'https://gmplib.org/download/gmp/' | grep -i 'gmp-[0-9]' | sed -e 's|"|\n|g' | grep -i '^gmp-[0-9].*xz$' | sed -e 's|gmp-||g' -e 's|\.tar.*||g' | sort -V | tail -n 1)"
     #wget -c -t 9 -T 9 "https://gmplib.org/download/gmp/gmp-${_gmp_ver}.tar.xz"
-    wget 'https://gmplib.org/download/gmp/gmp-6.3.0.tar.xz'
+    wget 'https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz'
     tar -xof gmp-*.tar*
     sleep 1
     rm -f gmp-*.tar*
