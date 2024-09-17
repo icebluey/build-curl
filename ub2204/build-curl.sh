@@ -845,7 +845,9 @@ _build_curl() {
     sleep 1
     rm -f curl-*.tar*
     cd curl-*
-    LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS} -Wl,-rpath,/${_private_dir}" ; export LDFLAGS
+    LDFLAGS=''
+    LDFLAGS="${_ORIG_LDFLAGS}"; export LDFLAGS
+    #LDFLAGS="${_ORIG_LDFLAGS} -Wl,-rpath,/${_private_dir}"; export LDFLAGS
     ./configure \
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-shared --enable-static \
@@ -866,11 +868,13 @@ _build_curl() {
     sed 's/-lssl -lcrypto -lssl -lcrypto/-lssl -lcrypto/g' -i usr/lib/x86_64-linux-gnu/pkgconfig/libcurl.pc
     _strip_files
     find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' chrpath -r '$ORIGIN' '{}'
+    #find usr/lib/x86_64-linux-gnu/ -type f -iname '*.so*' | xargs -I '{}' patchelf --add-rpath '$ORIGIN' '{}'
     install -m 0755 -d usr/lib/x86_64-linux-gnu/curl
     cp -afr /"${_private_dir}" usr/lib/x86_64-linux-gnu/curl/
     mv -f usr/lib/x86_64-linux-gnu/libcurl.so* "${_private_dir}"/
     sed "s|^libdir=.*|libdir=/"${_private_dir}"|g" -i usr/lib/x86_64-linux-gnu/pkgconfig/libcurl.pc
     sed -e '/^Libs/s/-R[^ ]*//g' -e '/^Libs/s/ *$//' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
+    patchelf --add-rpath '$ORIGIN/../lib/x86_64-linux-gnu/curl/private' usr/bin/curl
     echo
     sleep 2
     tar -Jcvf /tmp/curl-"${_curl_ver}"-1_ub2204_amd64.tar.xz *
