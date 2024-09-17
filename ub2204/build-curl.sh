@@ -14,7 +14,7 @@ CXX=g++
 export CXX
 /sbin/ldconfig
 
-export _private_dir='usr/lib/x86_64-linux-gnu/curl/private'
+_private_dir='usr/lib/x86_64-linux-gnu/curl/private'
 
 set -e
 
@@ -94,7 +94,7 @@ _build_gmp() {
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    _gmp_ver="$(wget -qO- 'https://gmplib.org/download/gmp/' | grep -i 'gmp-[0-9]' | sed -e 's|"|\n|g' | grep -i '^gmp-[0-9].*xz$' | sed -e 's|gmp-||g' -e 's|\.tar.*||g' | sort -V | tail -n 1)"
+    #_gmp_ver="$(wget -qO- 'https://gmplib.org/download/gmp/' | grep -i 'gmp-[0-9]' | sed -e 's|"|\n|g' | grep -i '^gmp-[0-9].*xz$' | sed -e 's|gmp-||g' -e 's|\.tar.*||g' | sort -V | tail -n 1)"
     #wget -c -t 9 -T 9 "https://gmplib.org/download/gmp/gmp-${_gmp_ver}.tar.xz"
     wget 'https://gmplib.org/download/gmp/gmp-6.3.0.tar.xz'
     tar -xof gmp-*.tar*
