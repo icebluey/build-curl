@@ -64,9 +64,6 @@ apt install -y libsnmp-dev libmnl-dev libnftnl-dev libnl-3-dev libnl-genl-3-dev 
 # Required packages to build cryptsetup:
 apt install -y libdevmapper-dev libjson-c-dev libpopt-dev libssh-dev libuuid1 libblkid1 libargon2-dev libpwquality-dev libcrack2 liblvm2-dev lvm2 asciidoctor
 
-# OpenLDAP ubuntu 22.04
-apt install -y libldap2-dev libldap-dev
-
 apt upgrade -y
 /sbin/ldconfig
 [[ -e /etc/ssl/cert.pem ]] || ln -svf certs/ca-certificates.crt /etc/ssl/cert.pem
