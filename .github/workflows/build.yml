@@ -34,7 +34,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env._dateutc }}
-          files: /home/.tmp.curl/*.tar*
+          files: /home/.tmp.curl/*
 
       - name: Delete old release tag env
         run: |
