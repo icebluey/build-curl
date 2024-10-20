@@ -912,7 +912,7 @@ _build_libpsl
 _build_nghttp2
 #_build_nettle
 #_build_gnutls
-_build_rtmpdump
+#_build_rtmpdump
 _build_nghttp3
 _build_curl
 
