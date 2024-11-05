@@ -837,7 +837,8 @@ _build_rtmpdump() {
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    git clone --recursive 'https://git.ffmpeg.org/rtmpdump.git'
+    #git clone --recursive 'https://git.ffmpeg.org/rtmpdump.git'
+    git clone 'https://github.com/icebluey/rtmpdump.git'
     cd rtmpdump
     rm -fr .git
     #sed -e 's/^CRYPTO=OPENSSL/#CRYPTO=OPENSSL/' -e 's/#CRYPTO=GNUTLS/CRYPTO=GNUTLS/' -i Makefile -i librtmp/Makefile
