@@ -959,8 +959,8 @@ _build_lz4
 _build_zstd
 #_build_libexpat
 _build_libunistring
-#_build_openssl33
-_build_openssl34
+_build_openssl33
+#_build_openssl34
 _build_libssh2
 _build_pcre2
 #_build_libffi
