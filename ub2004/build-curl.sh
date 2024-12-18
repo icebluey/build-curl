@@ -170,7 +170,7 @@ _build_cares() {
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    _cares_ver="$(wget -qO- 'https://c-ares.org/' | grep -i 'href="/download/c-ares-[1-9].*\.tar' | sed -e 's|"|\n|g' | grep -i '^/download.*tar.gz$' | sed -e 's|.*c-ares-||g' -e 's|\.tar.*||g')"
+    _cares_ver="$(wget -qO- 'https://c-ares.org/' | grep -i 'href="/download/c-ares-[1-9].*\.tar' | sed -e 's|"|\n|g' | grep -i '^/download.*tar.gz$' | sed -e 's|.*c-ares-||g' -e 's|\.tar.*||g' | sort -V | tail -n 1)"
     wget -c -t 9 -T 9 "https://c-ares.org/download/c-ares-${_cares_ver}.tar.gz"
     tar -xof c-ares-*.tar*
     sleep 1
