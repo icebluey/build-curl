@@ -1005,7 +1005,7 @@ _build_nghttp3() {
     set -e
     _tmp_dir="$(mktemp -d)"
     cd "${_tmp_dir}"
-    #wget -c -t 9 -T 9 "https://github.com/ngtcp2/nghttp3/releases/download/v1.5.0/nghttp3-1.5.0.tar.xz"
+    #wget -c -t 9 -T 9 "https://github.com/ngtcp2/nghttp3/releases/download/v1.9.0/nghttp3-1.9.0.tar.xz"
     _nghttp3_ver="$(wget -qO- 'https://github.com/ngtcp2/nghttp3/releases' | grep -i '/ngtcp2/nghttp3/tree/' | sed 's|"|\n|g' | grep -i '^/ngtcp2/nghttp3/tree/' | grep -ivE 'alpha|beta|rc[0-9]' | sed 's|.*/tree/[Vv]||g' | sort -V | uniq | tail -n1)"
     wget -c -t 9 -T 9 "https://github.com/ngtcp2/nghttp3/releases/download/v${_nghttp3_ver}/nghttp3-${_nghttp3_ver}.tar.xz"
     tar -xof nghttp3-*.tar*
@@ -1031,6 +1031,41 @@ _build_nghttp3() {
     cd /tmp
     rm -fr "${_tmp_dir}"
     rm -fr /tmp/nghttp3
+    /sbin/ldconfig
+}
+
+_build_ngtcp2() {
+    /sbin/ldconfig
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    #wget -c -t 9 -T 9 "https://github.com/ngtcp2/ngtcp2/releases/download/v1.12.0/ngtcp2-1.12.0.tar.xz"
+    _ngtcp2_ver="$(wget -qO- 'https://github.com/ngtcp2/ngtcp2/releases' | grep -i '/ngtcp2/ngtcp2/tree/' | sed 's|"|\n|g' | grep -i '^/ngtcp2/ngtcp2/tree/' | grep -ivE 'alpha|beta|rc[0-9]' | sed 's|.*/tree/[Vv]||g' | sort -V | uniq | tail -n1)"
+    wget -c -t 9 -T 9 "https://github.com/ngtcp2/ngtcp2/releases/download/v${_ngtcp2_ver}/ngtcp2-${_ngtcp2_ver}.tar.xz"
+    tar -xof ngtcp2-*.tar*
+    sleep 1
+    rm -f ngtcp2-*.tar*
+    cd ngtcp2*
+    rm -fr .git
+    LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
+    ./configure \
+    --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
+    --enable-shared --enable-lib-only \
+    --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc \
+    --with-boringssl=yes
+    make -j$(cat /proc/cpuinfo | grep -i '^processor' | wc -l) all
+    rm -fr /tmp/ngtcp2
+    make install DESTDIR=/tmp/ngtcp2
+    cd /tmp/ngtcp2
+    _strip_files
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    sleep 2
+    /bin/cp -afr * /
+    sleep 2
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/ngtcp2
     /sbin/ldconfig
 }
 
@@ -1124,6 +1159,7 @@ _build_nghttp2
 
 _build_rtmpdump
 _build_nghttp3
+_build_ngtcp2
 _build_curl
 
 echo
