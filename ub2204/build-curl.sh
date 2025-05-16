@@ -1051,7 +1051,7 @@ _build_ngtcp2() {
     ./configure \
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
     --enable-shared --with-boringssl \
-    --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc \
+    --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc
     make -j$(cat /proc/cpuinfo | grep -i '^processor' | wc -l) all
     rm -fr /tmp/ngtcp2
     make install DESTDIR=/tmp/ngtcp2
