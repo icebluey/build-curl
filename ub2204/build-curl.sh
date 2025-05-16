@@ -1050,9 +1050,8 @@ _build_ngtcp2() {
     LDFLAGS='' ; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$$ORIGIN' ; export LDFLAGS
     ./configure \
     --build=x86_64-linux-gnu --host=x86_64-linux-gnu \
-    --enable-shared --enable-lib-only \
+    --enable-shared --with-boringssl \
     --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include --sysconfdir=/etc \
-    --with-boringssl=yes
     make -j$(cat /proc/cpuinfo | grep -i '^processor' | wc -l) all
     rm -fr /tmp/ngtcp2
     make install DESTDIR=/tmp/ngtcp2
