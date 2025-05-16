@@ -59,6 +59,26 @@ _strip_files() {
     echo
 }
 
+_install_go() {
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    # Latest version of go
+    #_go_version="$(wget -qO- 'https://golang.org/dl/' | grep -i 'linux-amd64\.tar\.' | sed 's/"/\n/g' | grep -i 'linux-amd64\.tar\.' | cut -d/ -f3 | grep -i '\.gz$' | sed 's/go//g; s/.linux-amd64.tar.gz//g' | grep -ivE 'alpha|beta|rc' | sort -V | uniq | tail -n 1)"
+
+    # go1.24.X
+    _go_version="$(wget -qO- 'https://golang.org/dl/' | grep -i 'linux-amd64\.tar\.' | sed 's/"/\n/g' | grep -i 'linux-amd64\.tar\.' | cut -d/ -f3 | grep -i '\.gz$' | sed 's/go//g; s/.linux-amd64.tar.gz//g' | grep -ivE 'alpha|beta|rc' | sort -V | uniq | grep '^1\.24\.' | tail -n 1)"
+
+    wget -q -c -t 0 -T 9 "https://dl.google.com/go/go${_go_version}.linux-amd64.tar.gz"
+    rm -fr /usr/local/go
+    sleep 1
+    install -m 0755 -d /usr/local/go
+    tar -xof "go${_go_version}.linux-amd64.tar.gz" --strip-components=1 -C /usr/local/go/
+    sleep 1
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+}
+
 _build_zlib() {
     /sbin/ldconfig
     set -e
@@ -517,6 +537,70 @@ _build_openssl35() {
     cd /tmp
     rm -fr "${_tmp_dir}"
     rm -fr /tmp/openssl35
+    /sbin/ldconfig
+}
+
+_build_aws-lc() {
+    set -e
+    _tmp_dir="$(mktemp -d)"
+    cd "${_tmp_dir}"
+    _aws_lc_tag="$(wget -qO- 'https://github.com/aws/aws-lc/tags' | grep -i 'href="/.*/releases/tag/' | sed 's|"|\n|g' | grep -i '/releases/tag/' | sed 's|.*/tag/||g' | sort -V | uniq | tail -n 1)"
+    wget -c -t 9 -T 9 "https://github.com/aws/aws-lc/archive/refs/tags/${_aws_lc_tag}.tar.gz"
+    tar -xof *.tar*
+    sleep 1
+    rm -f *.tar*
+    cd aws*
+    # Go programming language
+    export GOROOT='/usr/local/go'
+    export GOPATH="$GOROOT/home"
+    export GOTMPDIR='/tmp'
+    export GOBIN="$GOROOT/bin"
+    export PATH="$GOROOT/bin:$PATH"
+    alias go="$GOROOT/bin/go"
+    alias gofmt="$GOROOT/bin/gofmt"
+    rm -fr ~/.cache/go-build
+    echo
+    go version
+    echo
+    LDFLAGS=''; LDFLAGS="${_ORIG_LDFLAGS}"' -Wl,-rpath,\$ORIGIN'; export LDFLAGS
+    cmake \
+    -GNinja \
+    -S "." \
+    -B "aws-lc-build" \
+    -DCMAKE_BUILD_TYPE='Release' \
+    -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+    -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+    -DINCLUDE_INSTALL_DIR:PATH=/usr/include \
+    -DLIB_INSTALL_DIR:PATH=/usr/lib/x86_64-linux-gnu \
+    -DSYSCONF_INSTALL_DIR:PATH=/etc \
+    -DSHARE_INSTALL_PREFIX:PATH=/usr/share \
+    -DLIB_SUFFIX=64 \
+    -DBUILD_SHARED_LIBS:BOOL=ON \
+    -DCMAKE_INSTALL_SO_NO_EXE:INTERNAL=0
+    cmake --build "aws-lc-build" --parallel $(nproc --all) --verbose
+    rm -fr /tmp/aws-lc
+    DESTDIR="/tmp/aws-lc" cmake --install "aws-lc-build"
+    cd /tmp/aws-lc
+    # Only for debian/ubuntu
+    mkdir -p usr/include/x86_64-linux-gnu/openssl
+    chmod 0755 usr/include/x86_64-linux-gnu/openssl
+    install -c -m 0644 usr/include/openssl/opensslconf.h usr/include/x86_64-linux-gnu/openssl/
+    sed 's|http://|https://|g' -i usr/lib/x86_64-linux-gnu/pkgconfig/*.pc
+    _strip_files
+    install -m 0755 -d "${_private_dir}"
+    cp -af usr/lib/x86_64-linux-gnu/*.so* "${_private_dir}"/
+    rm -vf usr/bin/openssl
+    rm -vf usr/bin/c_rehash
+    rm -fr /usr/include/openssl
+    rm -fr /usr/include/x86_64-linux-gnu/openssl
+    rm -vf /usr/lib/x86_64-linux-gnu/libssl.so
+    rm -vf /usr/lib/x86_64-linux-gnu/libcrypto.so
+    sleep 2
+    /bin/cp -afr * /
+    sleep 2
+    cd /tmp
+    rm -fr "${_tmp_dir}"
+    rm -fr /tmp/aws-lc
     /sbin/ldconfig
 }
 
@@ -1011,22 +1095,33 @@ _build_zlib
 #_build_gmp
 _build_cares
 _build_brotli
-_build_lz4
-_build_zstd
+
+#_build_lz4
+#_build_zstd
+
 #_build_libexpat
 _build_libunistring
+
 #_build_openssl33
 #_build_openssl34
-_build_openssl35
+#_build_openssl35
+
+_install_go
+_build_aws-lc
+
 _build_libssh2
 _build_pcre2
+
 #_build_libffi
 #_build_p11kit
+
 _build_libidn2
 _build_libpsl
 _build_nghttp2
+
 #_build_nettle
 #_build_gnutls
+
 _build_rtmpdump
 _build_nghttp3
 _build_curl
