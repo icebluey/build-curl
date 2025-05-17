@@ -6,4 +6,9 @@ tcpdump -i ens5 -w www.cloudflare.com-h3.pcap -s 0 -Snn -vvv -XX host 104.16.123
 SSLKEYLOGFILE=/tmp/tlskey.log curl -4 -vI --http3-only https://www.cloudflare.com
 ```
 
-
+# wireshark
+```
+Edit -> Preferences -> Protocols -> TLS -> (Pre)-Master-Secret log filename
+Browse to select tlskey.log
+Apply
+```
